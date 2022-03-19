@@ -7,7 +7,7 @@ from DB import Database
 
 from six.moves import cPickle
 import numpy as np
-import scipy.misc
+import imageio
 import itertools
 import os
 
@@ -86,7 +86,7 @@ class Color(object):
     if isinstance(input, np.ndarray):  # examinate input type
       img = input.copy()
     else:
-      img = scipy.misc.imread(input, mode='RGB')
+      img = imageio.imread(input, pilmode='RGB')
     height, width, channel = img.shape
     bins = np.linspace(0, 256, n_bin+1, endpoint=True)  # slice bins equally for each channel
   
@@ -161,7 +161,7 @@ if __name__ == "__main__":
   color = Color()
 
   # test normalize
-  hist = color.histogram(data.ix[0,0], type='global')
+  hist = color.histogram(data.iloc[0,0], type='global')
   assert hist.sum() - 1 < 1e-9, "normalize false"
 
   # test histogram bins
