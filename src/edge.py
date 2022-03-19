@@ -10,6 +10,7 @@ import numpy as np
 import imageio
 from math import sqrt
 import os
+from tqdm import tqdm
 
 
 stride = (1, 1)
@@ -173,7 +174,7 @@ class Edge(object):
   
       samples = []
       data = db.get_data()
-      for d in data.itertuples():
+      for d in tqdm(data.itertuples()):
         d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
         d_hist = self.histogram(d_img, type=h_type, n_slice=n_slice)
         samples.append({
