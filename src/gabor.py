@@ -15,7 +15,7 @@ from six.moves import cPickle
 import numpy as np
 import imageio
 import os
-
+from tqdm import tqdm
 
 theta     = 4
 frequency = (0.1, 0.5, 0.8)
@@ -203,7 +203,7 @@ class Gabor(object):
   
       samples = []
       data = db.get_data()
-      for d in data.itertuples():
+      for d in tqdm(data.itertuples()):
         d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
         d_hist = self.gabor_histogram(d_img, type=h_type, n_slice=n_slice)
         samples.append({
