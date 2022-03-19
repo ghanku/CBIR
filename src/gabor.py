@@ -13,7 +13,7 @@ import multiprocessing
 
 from six.moves import cPickle
 import numpy as np
-import scipy.misc
+import imageio
 import os
 
 
@@ -102,7 +102,7 @@ class Gabor(object):
     if isinstance(input, np.ndarray):  # examinate input type
       img = input.copy()
     else:
-      img = scipy.misc.imread(input, mode='RGB')
+      img = imageio.imread(input, pilmode='RGB')
     height, width, channel = img.shape
   
     if type == 'global':
