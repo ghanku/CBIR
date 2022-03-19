@@ -10,6 +10,7 @@ import numpy as np
 import imageio
 import itertools
 import os
+from tqdm import tqdm
 
 
 # configs for histogram
@@ -142,7 +143,7 @@ class Color(object):
         print("Counting histogram..., config=%s, distance=%s, depth=%s" % (sample_cache, d_type, depth))
       samples = []
       data = db.get_data()
-      for d in data.itertuples():
+      for d in tqdm(data.itertuples()):
         d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
         d_hist = self.histogram(d_img, type=h_type, n_bin=n_bin, n_slice=n_slice)
         samples.append({
