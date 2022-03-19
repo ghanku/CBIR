@@ -12,6 +12,7 @@ from six.moves import cPickle
 import numpy as np
 import imageio
 import os
+from tqdm import tqdm
 
 n_bin    = 10
 n_slice  = 6
@@ -139,7 +140,7 @@ class HOG(object):
 
       samples = []
       data = db.get_data()
-      for d in data.itertuples():
+      for d in tqdm(data.itertuples()):
         d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
         d_hist = self.histogram(d_img, type=h_type, n_slice=n_slice)
         samples.append({
