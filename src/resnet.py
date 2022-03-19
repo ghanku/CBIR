@@ -16,7 +16,7 @@ import os
 
 from evaluate import evaluate_class
 from DB import Database
-
+from tqdm import tqdm
 
 '''
   downloading problem in mac OSX should refer to this answer:
@@ -138,7 +138,7 @@ class ResNetFeat(object):
         res_model = res_model.cuda()
       samples = []
       data = db.get_data()
-      for d in data.itertuples():
+      for d in tqdm(data.itertuples()):
         d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
         img = imageio.imread(input, pilmode='RGB')
         img = img[:, :, ::-1]  # switch to BGR
