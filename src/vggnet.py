@@ -166,7 +166,7 @@ class VGGNetFeat(object):
       data = db.get_data()
       for d in tqdm(data.itertuples()):
         d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-        img = imageio.imread(input, pilmode='RGB')
+        img = imageio.imread(d_img, pilmode='RGB')
         img = img[:, :, ::-1]  # switch to BGR
         img = np.transpose(img, (2, 0, 1)) / 255.
         img[0] -= means[0]  # reduce B's mean
