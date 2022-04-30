@@ -148,7 +148,7 @@ class GVF(object):
                     sample_cache, d_type, depth))
         samples = []
         data = db.get_data()
-        for d in tqdm(data.itertuples()):
+        for d in tqdm(data.itertuples(), total=len(data)):
             d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
             d_gvf = self.gradient_vector_flow(
                 d_img, mu=1.0, resize=True, flatten=True)
