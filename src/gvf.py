@@ -3,7 +3,7 @@
 # GVF(Gradient Vector Flow) of 2D image.
 # file created by A.Chabira
 # GVF functions implemented by t-suzuki
-# original class structure and functions made by Po-Chih Huang
+# original class structure made by Po-Chih Huang
 # License: Public Domain
 #
 # reference:
@@ -45,15 +45,16 @@ class GVF(object):
         ''' calc gradient vector flow of input gradient field fx, fy
 
           arguments
-            fx    : input gradient field x
-            fy    : input gradient field y
-            mu     :GVF regularization coefficient
+            input : input egde map
+            dx    :
+            dy    :
+            mu    : GVF regularization coefficient
 
           return
-            type == 'global'
-              a numpy array with size n_bin ** channel
-            type == 'region'
-              a numpy array with size n_slice * n_slice * (n_bin ** channel)
+            flatten == False
+                a tuple of two numpy 2D arrays each with shape equal to input image
+            flatten == True
+                a numpy array with size equal to 2*length(input)*width(input)
         '''
 
         # read image
