@@ -1,6 +1,6 @@
 #!env python
 # -*- coding: utf-8 -*-
-# LBP(Local Binary Pattern) of 2D image.
+# Wavelet transform of 2D image.
 # file created by A.Chabira
 # original class structure made by Po-Chih Huang
 # License: Public Domain
@@ -20,17 +20,17 @@ import skimage.color
 import skimage.data
 import skimage.transform
 import skimage.filters as skimage_filter
-from skimage.feature import local_binary_pattern
 import itertools
 from tqdm import tqdm
+import pywt
 
 
-# configs for LBP
-mu = 12        # GVF regularization coefficient
+# configs for wavelet
+level = 4        # order of slantlet matrix
+wavelet = 'bior1.5'
 
 d_type = 'd1'      # distance type (similarity measure)
 depth = 3         # retrieved depth, set to None will count the ap for whole database
-
 
 # cache dir
 cache_dir = 'cache'
@@ -38,22 +38,17 @@ if not os.path.exists(cache_dir):
     os.makedirs(cache_dir)
 
 
-class LBP(object):
-    def Local_Binary_Pattern(self, input, radius=3, points=24, method='default', resize=True,  normalize=True, flatten=False):
-        ''' calc Local Binary Pattern of input image
+class WAVELET(object):
+    def wavelet_transform(self, input, level=1, wavelet='db1', normalize=True, resize=True, flatten=False):
+        ''' Calculates Slantelet Transform of grayscale image
 
-          arguments
-            input  : input single channel only image or 2D array
-            radius : Radius of circle hyperparameter (spatial resolution of the operator)
-            points : Number of neighbor set points
-            method : {‘default’, ‘ror’, ‘uniform’, ‘var’}
-                     Method to determine the pattern.
+                arguments
+                  input   : input single channel only image or 2D array (preferably square of shape 2**n)
+                  level   : level of wavelet transform
+                  wavelet : type of wavelet used; pywt.wavelist(family) to view options
 
-          return
-            flatten == False
-                a single channel 2D array with shape equal to input image
-            flatten == True
-                a numpy array with size equal to height(input)*width(input)
+                return
+                      a numpy 2D array with size equal to iput shape
         '''
 
         # read image
@@ -61,28 +56,26 @@ class LBP(object):
             img = input.copy()
         else:
             img = imageio.imread(input, pilmode='RGB')
+        # convert RGB image into grayscale since this is a shape based feature type
+        img = skimage.color.rgb2gray(img).astype(np.float32)
 
-        # convert to grayscale
-        img = skimage.color.rgb2gray(img)
-        # resize images into 200x200
         if resize:
             img = skimage.transform.resize(img, (200, 200))
 
-        img = img.astype(np.uint8)  # make sure its values are between 0-255
-
-        # calculate LBP
-        lbp = local_binary_pattern(img, P=points, R=radius, method=method)
+        # calculate wavelet transform
+        w = pywt.wavedec2(img, wavelet, mode='periodization', level=level)
+        w, _ = pywt.coeffs_to_array(w)  # convert to single array
 
         if normalize:
-            lbp = lbp.astype(float) / 255
+            w[0] /= np.abs(w[0]).max()
 
         if flatten:
-            lbp = lbp.flatten()
+            w = w.flatten()
 
-        return lbp
+        return w
 
     def make_samples(self, db, verbose=True):
-        sample_cache = "lbp_cache"
+        sample_cache = "wavelet_cache"
         try:
             samples = cPickle.load(
                 open(os.path.join(cache_dir, sample_cache), "rb", True))
@@ -91,38 +84,34 @@ class LBP(object):
                       (sample_cache, d_type, depth))
         except:
             if verbose:
-                print("Counting lbp..., config=%s, distance=%s, depth=%s" % (
+                print("Counting wavelet..., config=%s, distance=%s, depth=%s" % (
                     sample_cache, d_type, depth))
-
-        data = db.get_data()
-
         samples = []
+        data = db.get_data()
         for d in tqdm(data.itertuples(), total=len(data)):
             d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-            d_lbp = self.Local_Binary_Pattern(
-                d_img, radius=3, points=24, resize=True, method='default', flatten=True)
+            d_wavelet = self.wavelet_transform(
+                d_img, level=level, wavelet=wavelet, normalize=False, resize=True)
             samples.append({
                 'img':  d_img,
                 'cls':  d_cls,
-                'hist': d_lbp
+                'hist': d_wavelet
             })
-
         cPickle.dump(samples, open(os.path.join(
             cache_dir, sample_cache), "wb", True))
-
         return samples
 
 
 if __name__ == "__main__":
     db = Database()
     data = db.get_data()
-    lbp = LBP()
+    wave = WAVELET()
 
-    # test lbp feature extraction on one instance
-    lbp_img = lbp.Local_Binary_Pattern(
-        input=data.iloc[0, 0], radius=3, points=24, method='default', resize=True,  normalize=True, flatten=False)
+    # test wavelet transform on one instance
+    w = wave.wavelet_transform(
+        data.iloc[0, 0], level=level, wavelet=wavelet, resize=True, flatten=False)
 
-    APs = evaluate_class(db, f_class=LBP, d_type=d_type, depth=depth)
+    APs = evaluate_class(db, f_class=WAVELET, d_type=d_type, depth=depth)
     cls_MAPs = []
     for cls, cls_APs in APs.items():
         MAP = np.mean(cls_APs)

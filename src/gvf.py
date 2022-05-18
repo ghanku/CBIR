@@ -98,16 +98,16 @@ class GVF(object):
             next_u = (1.0 - b * dt) * curr_u + r * laplacian(curr_u) + c1 * dt
             next_v = (1.0 - b * dt) * curr_v + r * laplacian(curr_v) + c2 * dt
             curr_u, curr_v = next_u, next_v
-        feature_vect = curr_u, curr_v
+
+        feature_vect = np.zeros([curr_u.shape[0], curr_u.shape[1], 2])
+        feature_vect[:, :, 0] = curr_u
+        feature_vect[:, :, 1] = curr_v
 
         if normalize:
-            curr_u /= np.sum(curr_u)
-            curr_v /= np.sum(curr_v)
+            feature_vect /= np.sum(feature_vect)
 
         if flatten:
-            curr_u = curr_u.flatten()
-            curr_v = curr_v.flatten()
-            feature_vect = np.concatenate((curr_u, curr_v))
+            feature_vect = feature_vect.flatten()
 
         return feature_vect
 
@@ -169,7 +169,8 @@ if __name__ == "__main__":
     gvf = GVF()
 
     # test gvf extraction on one instance
-    gx, gy = gvf.gradient_vector_flow(data.iloc[0, 0], mu=1.0)
+    grad_v_flow = gvf.gradient_vector_flow(data.iloc[0, 0], mu=1.0)
+    gx, gy = grad_v_flow[0], grad_v_flow[1]
 
     APs = evaluate_class(db, f_class=GVF, d_type=d_type, depth=depth)
     cls_MAPs = []

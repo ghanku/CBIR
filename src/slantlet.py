@@ -76,6 +76,9 @@ class SLANT(object):
         S = self.slant_matrix(n)
         S_t = S @ img @ np.transpose(S)  # clalculate slant transform
 
+        if flatten:
+            S_t = S_t.flatten()
+
         return S_t
 
     def slant_matrix(self, n):
