@@ -171,7 +171,7 @@ if __name__ == '__main__':
     dcd = DCD()
 
     # test DCD on one instance
-    S_t = dominant_color_descriptor(
+    Desciptor = dcd.dominant_color_descriptor(
         data.iloc[0, 0], img_type='RGB', order=8, resize=True, flatten=False)
 
     APs = evaluate_class(db, f_class=DCD, d_type=d_type, depth=depth)
