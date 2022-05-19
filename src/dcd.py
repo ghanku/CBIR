@@ -59,7 +59,7 @@ class DCD(object):
             img = imageio.imread(input, pilmode='RGB')
 
         if resize:
-            img = skimage.transform.resize(img, (2**n, 2**n))
+            img = skimage.transform.resize(img, (200, 200))
 
         if img_type == 'RGB':
             img = skimage.color.rgb2hsv(img)
@@ -153,7 +153,7 @@ class DCD(object):
         for d in tqdm(data.itertuples(), total=len(data)):
             d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
             d_dcd = self.dominant_color_descriptor(
-                d_img, img_type='RGB', order=8, resize=True, flatten=False)
+                d_img, img_type='RGB', order=n, resize=True, flatten=False)
             samples.append({
                 'img':  d_img,
                 'cls':  d_cls,
@@ -172,7 +172,7 @@ if __name__ == '__main__':
 
     # test DCD on one instance
     Desciptor = dcd.dominant_color_descriptor(
-        data.iloc[0, 0], img_type='RGB', order=8, resize=True, flatten=False)
+        data.iloc[0, 0], img_type='RGB', order=n, resize=True, flatten=False)
 
     APs = evaluate_class(db, f_class=DCD, d_type=d_type, depth=depth)
     cls_MAPs = []
