@@ -39,7 +39,7 @@ if not os.path.exists(cache_dir):
 
 
 class WAVELET(object):
-    def wavelet_transform(self, input, level=1, wavelet='db1', normalize=True, resize=True, flatten=False):
+    def wavelet_transform(self, input, level=1, wavelet='db1', normalize=False, resize=True, flatten=False):
         ''' Calculates Slantelet Transform of grayscale image
 
                 arguments

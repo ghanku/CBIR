@@ -43,7 +43,7 @@ if not os.path.exists(cache_dir):
 
 
 class SLANT(object):
-    def slant_transform(self, input, order, normalize=True, resize=True, flatten=False):
+    def slant_transform(self, input, order, normalize=False, resize=True, flatten=False):
         ''' Calculates Slantelet Transform of grayscale image
 
                 arguments
@@ -75,6 +75,9 @@ class SLANT(object):
 
         S = self.slant_matrix(n)
         S_t = S @ img @ np.transpose(S)  # clalculate slant transform
+
+        if normalize:
+            S_t /= np.sum(S_t)
 
         if flatten:
             S_t = S_t.flatten()

@@ -41,7 +41,7 @@ if not os.path.exists(cache_dir):
 
 
 class GVF(object):
-    def gradient_vector_flow(self, input, mu, dx=1.0, dy=1.0, normalize=True, resize=True, flatten=False):
+    def gradient_vector_flow(self, input, mu, dx=1.0, dy=1.0, normalize=False, resize=True, flatten=False):
         ''' calc gradient vector flow of input gradient field fx, fy
 
           arguments
