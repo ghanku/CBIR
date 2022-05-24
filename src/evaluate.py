@@ -37,6 +37,8 @@ def distance(v1, v2, d_type='d1'):
         return spatial.distance.cosine(v1, v2)
     elif d_type == 'square':
         return np.sum((v1 - v2) ** 2)
+    elif d_type == 'dcd':
+        return (1 - np.minimum(v1[0], v2[0]))
 
 
 def AP(label, results, sort=True):
