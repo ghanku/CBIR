@@ -147,41 +147,15 @@ def make_layers(cfg, batch_norm=False):
 
 class VGGNetFeat(object):
 
-<<<<<<< HEAD
-    def make_samples(self, db, verbose=True):
+
+<< << << < HEAD
+   def make_samples(self, db, verbose=True):
         sample_cache = '{}-{}'.format(VGG_model, pick_layer)
 
-=======
-  def make_samples(self, db, verbose=True):
-    sample_cache = '{}-{}'.format(VGG_model, pick_layer)
-  
-    try:
-      samples = cPickle.load(open(os.path.join(cache_dir, sample_cache), "rb", True))
-      for sample in samples:
-        sample['hist'] /= np.sum(sample['hist'])  # normalize
-      cPickle.dump(samples, open(os.path.join(cache_dir, sample_cache), "wb", True))
-      if verbose:
-        print("Using cache..., config=%s, distance=%s, depth=%s" % (sample_cache, d_type, depth))
-    except:
-      if verbose:
-        print("Counting histogram..., config=%s, distance=%s, depth=%s" % (sample_cache, d_type, depth))
-  
-      vgg_model = VGGNet(requires_grad=False, model=VGG_model)
-      vgg_model.eval()
-      if use_gpu:
-        vgg_model = vgg_model.cuda()
-      samples = []
-      data = db.get_data()
-      for d in tqdm(data.itertuples()):
-        d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-        img = imageio.imread(d_img, pilmode='RGB')
-        img = img[:, :, ::-1]  # switch to BGR
-        img = np.transpose(img, (2, 0, 1)) / 255.
-        img[0] -= means[0]  # reduce B's mean
-        img[1] -= means[1]  # reduce G's mean
-        img[2] -= means[2]  # reduce R's mean
-        img = np.expand_dims(img, axis=0)
->>>>>>> 0d3e3d5a5054619665fa2abbe13ec057b68d1755
+== == == =
+   def make_samples(self, db, verbose=True):
+        sample_cache = '{}-{}'.format(VGG_model, pick_layer)
+
         try:
             samples = cPickle.load(
                 open(os.path.join(cache_dir, sample_cache), "rb", True))
@@ -205,38 +179,69 @@ class VGGNetFeat(object):
             data = db.get_data()
             for d in tqdm(data.itertuples(), total=len(data)):
                 d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-                img = imageio.imread(input, pilmode='RGB')
+                img = imageio.imread(d_img, pilmode='RGB')
                 img = img[:, :, ::-1]  # switch to BGR
                 img = np.transpose(img, (2, 0, 1)) / 255.
                 img[0] -= means[0]  # reduce B's mean
                 img[1] -= means[1]  # reduce G's mean
                 img[2] -= means[2]  # reduce R's mean
                 img = np.expand_dims(img, axis=0)
-                try:
-                    if use_gpu:
-                        inputs = torch.autograd.Variable(
-                            torch.from_numpy(img).cuda().float())
-                    else:
-                        inputs = torch.autograd.Variable(
-                            torch.from_numpy(img).float())
-                    d_hist = vgg_model(inputs)[pick_layer]
-                    d_hist = np.sum(d_hist.data.cpu().numpy(), axis=0)
-                    d_hist /= np.sum(d_hist)  # normalize
-                    samples.append({
-                        'img':  d_img,
-                        'cls':  d_cls,
-                        'hist': d_hist
-                    })
-                except:
-                    pass
-            cPickle.dump(samples, open(os.path.join(
-                cache_dir, sample_cache), "wb", True))
+>>>>>> > 0d3e3d5a5054619665fa2abbe13ec057b68d1755
+   try:
+        samples = cPickle.load(
+            open(os.path.join(cache_dir, sample_cache), "rb", True))
+        for sample in samples:
+            sample['hist'] /= np.sum(sample['hist'])  # normalize
+        cPickle.dump(samples, open(os.path.join(
+            cache_dir, sample_cache), "wb", True))
+        if verbose:
+            print("Using cache..., config=%s, distance=%s, depth=%s" %
+                  (sample_cache, d_type, depth))
+    except:
+        if verbose:
+            print("Counting histogram..., config=%s, distance=%s, depth=%s" % (
+                sample_cache, d_type, depth))
 
-        return samples
+        vgg_model = VGGNet(requires_grad=False, model=VGG_model)
+        vgg_model.eval()
+        if use_gpu:
+            vgg_model = vgg_model.cuda()
+        samples = []
+        data = db.get_data()
+        for d in tqdm(data.itertuples(), total=len(data)):
+            d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
+            img = imageio.imread(input, pilmode='RGB')
+            img = img[:, :, ::-1]  # switch to BGR
+            img = np.transpose(img, (2, 0, 1)) / 255.
+            img[0] -= means[0]  # reduce B's mean
+            img[1] -= means[1]  # reduce G's mean
+            img[2] -= means[2]  # reduce R's mean
+            img = np.expand_dims(img, axis=0)
+            try:
+                if use_gpu:
+                    inputs = torch.autograd.Variable(
+                        torch.from_numpy(img).cuda().float())
+                else:
+                    inputs = torch.autograd.Variable(
+                        torch.from_numpy(img).float())
+                d_hist = vgg_model(inputs)[pick_layer]
+                d_hist = np.sum(d_hist.data.cpu().numpy(), axis=0)
+                d_hist /= np.sum(d_hist)  # normalize
+                samples.append({
+                    'img':  d_img,
+                    'cls':  d_cls,
+                    'hist': d_hist
+                })
+            except:
+                pass
+        cPickle.dump(samples, open(os.path.join(
+            cache_dir, sample_cache), "wb", True))
+
+    return samples
 
 
 if __name__ == "__main__":
-    # evaluate database
+        # evaluate database
     db = Database()
     APs = evaluate_class(db, f_class=VGGNetFeat, d_type=d_type, depth=depth)
     cls_MAPs = []
