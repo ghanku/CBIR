@@ -14,7 +14,7 @@ import imageio
 import math
 from tqdm import tqdm
 import os
-
+import skimage.transform
 
 n_slice = 2
 n_orient = 8
@@ -58,7 +58,7 @@ if not os.path.exists(cache_dir):
 
 class Daisy(object):
 
-    def histogram(self, input, type=h_type, n_slice=n_slice, normalize=True):
+    def histogram(self, input, type=h_type, n_slice=n_slice, normalize=True, resize=True):
         ''' count img histogram
 
           arguments
@@ -80,6 +80,10 @@ class Daisy(object):
             img = input.copy()
         else:
             img = imageio.imread(input, pilmode='RGB')
+
+        if resize:
+            img = skimage.transform.resize(img, (200, 200))
+
         height, width, channel = img.shape
 
         P = math.ceil((height - radius * 2) / step)
@@ -101,7 +105,11 @@ class Daisy(object):
                     # slice img to regions
                     img_r = img[h_silce[hs]:h_silce[hs + 1],
                                 w_slice[ws]:w_slice[ws + 1]]
-                    hist[hs][ws] = self._daisy(img_r)
+                    try:
+                        hist[hs][ws] = self._daisy(img_r)
+                    except ValueError:
+                        print('shape error')
+                        print(img_r.shape)
 
         if normalize:
             hist /= np.sum(hist)
