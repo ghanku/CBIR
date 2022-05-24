@@ -4,6 +4,7 @@ from __future__ import print_function
 
 from scipy import spatial
 import numpy as np
+from tqdm import tqdm
 
 
 class Evaluation(object):
@@ -148,7 +149,8 @@ def evaluate_class(db, f_class=None, f_instance=None, depth=None, d_type='d1'):
     elif f_instance:
         f = f_instance
     samples = f.make_samples(db)
-    for query in samples:
+    print("Measuring Similarity... ")
+    for query in tqdm(samples, total=len(samples)):
         ap, _ = infer(query, samples=samples, depth=depth, d_type=d_type)
         ret[query['cls']].append(ap)
 
