@@ -9,13 +9,13 @@ from torchvision.models.vgg import VGG
 
 from six.moves import cPickle
 import numpy as np
-import scipy.misc
 import os
 
 from evaluate import evaluate_class
 from DB import Database
 import skimage.transform
 from tqdm import tqdm
+import imageio
 
 '''
   downloading problem in mac OSX should refer to this answer:
@@ -173,7 +173,7 @@ class VGGNetFeat(object):
             data = db.get_data()
             for d in tqdm(data.itertuples(), total=len(data)):
                 d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-                img = scipy.misc.imread(d_img, mode="RGB")
+                img = imageio.imread(d_img, pilmode='RGB')
                 if resize:
                     img = skimage.transform.resize(img, (200, 200))
                 img = img[:, :, ::-1]  # switch to BGR
