@@ -8,7 +8,7 @@ from torch.autograd import Variable
 from torchvision import models
 from torchvision.models.resnet import Bottleneck, BasicBlock, ResNet
 import torch.utils.model_zoo as model_zoo
-
+import skimage.transform
 from six.moves import cPickle
 import numpy as np
 import imageio
@@ -128,7 +128,7 @@ class ResidualNet(ResNet):
 
 class ResNetFeat(object):
 
-    def make_samples(self, db, verbose=True):
+    def make_samples(self, db, verbose=True, resize=True):
         sample_cache = '{}-{}'.format(RES_model, pick_layer)
 
         try:
@@ -152,7 +152,9 @@ class ResNetFeat(object):
             data = db.get_data()
             for d in tqdm(data.itertuples(), total=len(data)):
                 d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-                img = imageio.imread(input, pilmode='RGB')
+                img = imageio.imread(d_img, pilmode='RGB')
+                if resize:
+                    img = skimage.transform.resize(img, (200, 200))
                 img = img[:, :, ::-1]  # switch to BGR
                 img = np.transpose(img, (2, 0, 1)) / 255.
                 img[0] -= means[0]  # reduce B's mean
