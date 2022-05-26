@@ -33,6 +33,10 @@ n = 8        # order of function to approxiamte contour by EFD
 d_type = 'd1'      # distance type (similarity measure)
 depth = 3         # retrieved depth, set to None will count the ap for whole database
 
+if (len(sys.argv) > 1):
+    depth = int(sys.argv[1])
+    d_type = sys.argv[2]
+
 
 # cache dir
 cache_dir = 'cache'

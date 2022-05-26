@@ -11,6 +11,7 @@ from scipy import ndimage as ndi
 
 import multiprocessing
 
+import sys
 from six.moves import cPickle
 import numpy as np
 import imageio
@@ -27,6 +28,10 @@ h_type = 'global'
 d_type = 'cosine'
 
 depth = 1
+
+if (len(sys.argv) > 1):
+    depth = int(sys.argv[1])
+    d_type = sys.argv[2]
 
 ''' MMAP
      depth

@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+import sys
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -29,6 +30,10 @@ pick_layer = 'avg'        # extract feature of this layer
 d_type = 'd1'         # distance type
 
 depth = 3  # retrieved depth, set to None will count the ap for whole database
+
+if (len(sys.argv) > 1):
+    depth = int(sys.argv[1])
+    d_type = sys.argv[2]
 
 ''' MMAP
      depth

@@ -5,6 +5,7 @@ from __future__ import print_function
 from evaluate import evaluate_class
 from DB import Database
 
+import sys
 from six.moves import cPickle
 import numpy as np
 import imageio

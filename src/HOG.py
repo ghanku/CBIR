@@ -8,6 +8,7 @@ from DB import Database
 from skimage.feature import hog
 from skimage import color
 
+import sys
 from six.moves import cPickle
 import numpy as np
 import imageio
@@ -23,6 +24,10 @@ h_type = 'region'
 d_type = 'd1'
 
 depth = 5
+
+if (len(sys.argv) > 1):
+    depth = int(sys.argv[1])
+    d_type = sys.argv[2]
 
 ''' MMAP
      depth
