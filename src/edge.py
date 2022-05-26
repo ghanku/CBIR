@@ -21,6 +21,10 @@ d_type = 'cosine'
 
 depth = 5
 
+if (len(sys.argv) > 1):
+    depth = int(sys.argv[1])
+    d_type = sys.argv[2]
+
 ''' MMAP
       depth
        depthNone, region-stride(1, 1)-n_slice10,co, MMAP 0.101670982288
