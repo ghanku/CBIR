@@ -97,21 +97,21 @@ class LBP(object):
                 print("Counting lbp..., config=%s, distance=%s, depth=%s" % (
                     sample_cache, d_type, depth))
 
-        data = db.get_data()
+            data = db.get_data()
 
-        samples = []
-        for d in tqdm(data.itertuples(), total=len(data)):
-            d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-            d_lbp = self.Local_Binary_Pattern(
-                d_img, radius=3, points=24, resize=True, method='default', flatten=True)
-            samples.append({
-                'img':  d_img,
-                'cls':  d_cls,
-                'hist': d_lbp
-            })
+            samples = []
+            for d in tqdm(data.itertuples(), total=len(data)):
+                d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
+                d_lbp = self.Local_Binary_Pattern(
+                    d_img, radius=3, points=24, resize=True, method='default', flatten=True)
+                samples.append({
+                    'img':  d_img,
+                    'cls':  d_cls,
+                    'hist': d_lbp
+                })
 
-        cPickle.dump(samples, open(os.path.join(
-            cache_dir, sample_cache), "wb", True))
+            cPickle.dump(samples, open(os.path.join(
+                cache_dir, sample_cache), "wb", True))
 
         return samples
 

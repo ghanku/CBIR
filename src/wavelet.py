@@ -90,19 +90,19 @@ class WAVELET(object):
             if verbose:
                 print("Counting wavelet..., config=%s, distance=%s, depth=%s" % (
                     sample_cache, d_type, depth))
-        samples = []
-        data = db.get_data()
-        for d in tqdm(data.itertuples(), total=len(data)):
-            d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-            d_wavelet = self.wavelet_transform(
-                d_img, level=level, wavelet=wavelet, normalize=False, resize=True)
-            samples.append({
-                'img':  d_img,
-                'cls':  d_cls,
-                'hist': d_wavelet
-            })
-        cPickle.dump(samples, open(os.path.join(
-            cache_dir, sample_cache), "wb", True))
+            samples = []
+            data = db.get_data()
+            for d in tqdm(data.itertuples(), total=len(data)):
+                d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
+                d_wavelet = self.wavelet_transform(
+                    d_img, level=level, wavelet=wavelet, normalize=False, resize=True)
+                samples.append({
+                    'img':  d_img,
+                    'cls':  d_cls,
+                    'hist': d_wavelet
+                })
+            cPickle.dump(samples, open(os.path.join(
+                cache_dir, sample_cache), "wb", True))
         return samples
 
 

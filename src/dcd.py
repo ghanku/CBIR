@@ -29,7 +29,7 @@ from tqdm import tqdm
 # configs for DCD
 n = 8        # order of DCD
 
-d_type = 'd1'      # distance type (similarity measure)
+d_type = 'dcd2'      # distance type (similarity measure)
 depth = 3         # retrieved depth, set to None will count the ap for whole database
 
 if (len(sys.argv) > 1):
@@ -151,19 +151,19 @@ class DCD(object):
             if verbose:
                 print("Counting dcd..., config=%s, distance=%s, depth=%s" % (
                     sample_cache, d_type, depth))
-        samples = []
-        data = db.get_data()
-        for d in tqdm(data.itertuples(), total=len(data)):
-            d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-            d_dcd = self.dominant_color_descriptor(
-                d_img, img_type='RGB', order=n, resize=True, flatten=False)
-            samples.append({
-                'img':  d_img,
-                'cls':  d_cls,
-                'hist': d_dcd
-            })
-        cPickle.dump(samples, open(os.path.join(
-            cache_dir, sample_cache), "wb", True))
+            samples = []
+            data = db.get_data()
+            for d in tqdm(data.itertuples(), total=len(data)):
+                d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
+                d_dcd = self.dominant_color_descriptor(
+                    d_img, img_type='RGB', order=n, resize=True, flatten=False)
+                samples.append({
+                    'img':  d_img,
+                    'cls':  d_cls,
+                    'hist': d_dcd
+                })
+            cPickle.dump(samples, open(os.path.join(
+                cache_dir, sample_cache), "wb", True))
         return samples
 
 

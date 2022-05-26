@@ -166,19 +166,19 @@ class CCV(object):
             if verbose:
                 print("Counting ccv..., config=%s, distance=%s, depth=%s" % (
                     sample_cache, d_type, depth))
-        samples = []
-        data = db.get_data()
-        for d in tqdm(data.itertuples(), total=len(data)):
-            d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-            d_ccv = self.color_coherence_vector(
-                d_img, p_n=n, p_tau=tau, resize=True, flatten=False)
-            samples.append({
-                'img':  d_img,
-                'cls':  d_cls,
-                'hist': d_ccv
-            })
-        cPickle.dump(samples, open(os.path.join(
-            cache_dir, sample_cache), "wb", True))
+            samples = []
+            data = db.get_data()
+            for d in tqdm(data.itertuples(), total=len(data)):
+                d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
+                d_ccv = self.color_coherence_vector(
+                    d_img, p_n=n, p_tau=tau, resize=True, flatten=False)
+                samples.append({
+                    'img':  d_img,
+                    'cls':  d_cls,
+                    'hist': d_ccv
+                })
+            cPickle.dump(samples, open(os.path.join(
+                cache_dir, sample_cache), "wb", True))
         return samples
 
 

@@ -145,19 +145,19 @@ class SLANT(object):
             if verbose:
                 print("Counting slant..., config=%s, distance=%s, depth=%s" % (
                     sample_cache, d_type, depth))
-        samples = []
-        data = db.get_data()
-        for d in tqdm(data.itertuples(), total=len(data)):
-            d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-            d_slant = self.slant_transform(
-                d_img, order=n, resize=True, flatten=False)
-            samples.append({
-                'img':  d_img,
-                'cls':  d_cls,
-                'hist': d_slant
-            })
-        cPickle.dump(samples, open(os.path.join(
-            cache_dir, sample_cache), "wb", True))
+            samples = []
+            data = db.get_data()
+            for d in tqdm(data.itertuples(), total=len(data)):
+                d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
+                d_slant = self.slant_transform(
+                    d_img, order=n, resize=True, flatten=False)
+                samples.append({
+                    'img':  d_img,
+                    'cls':  d_cls,
+                    'hist': d_slant
+                })
+            cPickle.dump(samples, open(os.path.join(
+                cache_dir, sample_cache), "wb", True))
         return samples
 
 
