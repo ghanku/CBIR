@@ -30,6 +30,8 @@ depth = 3
 
 if (len(sys.argv) > 1):
     depth = int(sys.argv[1])
+    if depth == "None":
+        depth = None
     d_type = sys.argv[2]
 
 R = (rings * histograms + 1) * n_orient

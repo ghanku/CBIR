@@ -33,6 +33,8 @@ depth = 3  # retrieved depth, set to None will count the ap for whole database
 
 if (len(sys.argv) > 1):
     depth = int(sys.argv[1])
+    if depth == "None":
+        depth = None
     d_type = sys.argv[2]
 
 ''' MMAP
