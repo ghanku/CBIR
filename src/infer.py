@@ -89,6 +89,7 @@ if __name__ == '__main__':
     plt.title("Query", fontsize=20)
     plt.imshow(query_img)
     plt.show()
+
     axes = []
     fig = plt.figure(figsize=(16, 8))
 
