@@ -20,7 +20,8 @@ from gvf import GVF
 from lbp import LBP
 from slantlet import SLANT
 from wavelet import WAVELET
-
+import imageio
+import matplotlib.pyplot as plt
 
 depth = 5
 d_type = 'd1'
@@ -82,5 +83,23 @@ if __name__ == '__main__':
 
     samples = method.make_samples(db)
     query = samples[query_idx]
-    _, result = infer(query, samples=samples, depth=depth, d_type=d_type)
-    print(result)
+    ap, result = infer(query, samples=samples, depth=depth, d_type=d_type)
+    query_img = imageio.imread(query['img'], pilmode='RGB')
+    plt.axis('off')
+    plt.title("Query", fontsize=20)
+    plt.imshow(query_img)
+    plt.show()
+    axes = []
+    fig = plt.figure(figsize=(16, 8))
+
+    for a in range(depth):
+        score = result[a]['dis']
+        cls = result[a]['cls']
+        axes.append(fig.add_subplot(depth // 5, 5, a + 1))
+        subplot_title = "{:.4f} ".format(score) + cls
+        axes[-1].set_title(subplot_title)
+        plt.axis('off')
+        img = imageio.imread(result[a]['img'], pilmode='RGB')
+        plt.imshow(img)
+    fig.tight_layout()
+    plt.show()

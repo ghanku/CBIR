@@ -120,7 +120,8 @@ def infer(query, samples=None, db=None, sample_db_fn=None, depth=None, d_type='d
             continue
         results.append({
             'dis': distance(q_hist, s_hist, d_type=d_type),
-            'cls': s_cls
+            'cls': s_cls,
+            'img': s_img
         })
     results = sorted(results, key=lambda x: x['dis'])
     if depth and depth <= len(results):
