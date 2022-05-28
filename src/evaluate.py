@@ -4,7 +4,9 @@ from __future__ import print_function
 
 from scipy import spatial
 import numpy as np
+from scipy.spatial.distance import euclidean
 from tqdm import tqdm
+from scipy.stats import wasserstein_distance
 
 
 class Evaluation(object):
@@ -42,6 +44,22 @@ def distance(v1, v2, d_type='d1'):
         return np.sum(1 - np.minimum(v1[0], v2[0]))
     elif d_type == 'dcd2':
         return np.sum(np.absolute(v1[0] - v2[0]))
+    elif d_type == 'dcd3':
+        flat_1 = v1[1].flatten()
+        flat_2 = v2[1].flatten()
+        eulclidean = np.sum(np.absolute(v1[0] - v2[0]))
+        dis = spatial.distance.hamming(flat_1, flat_2)
+        return (eulclidean + 2 * dis)
+    elif d_type == 'dcd4':
+        eulclidean = np.sum(np.absolute(v1[0] - v2[0]))
+        dis = spatial.distance.directed_hausdorff(v1[1], v2[1])[0]
+        return (20.0 * eulclidean + dis) / 20.0
+    elif d_type == 'dcd5':
+        flat_1 = v1[1].flatten()
+        flat_2 = v2[1].flatten()
+        eulclidean = np.sum(np.absolute(v1[0] - v2[0]))
+        dis = wasserstein_distance(flat_1, flat_2)
+        return (15.0 * eulclidean + dis) / 30.0
 
 
 def AP(label, results, sort=True):
