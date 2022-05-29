@@ -157,7 +157,7 @@ class GVF(object):
             for d in tqdm(data.itertuples(), total=len(data)):
                 d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
                 d_gvf = self.gradient_vector_flow(
-                    d_img, mu=1.0, resize=True, flatten=True)
+                    d_img, mu=1.0, resize=True, flatten=False)
                 samples.append({
                     'img':  d_img,
                     'cls':  d_cls,

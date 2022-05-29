@@ -26,7 +26,9 @@ from tqdm import tqdm
 
 
 # configs for LBP
-mu = 12        # GVF regularization coefficient
+radius = 3
+points = 24
+method = 'default'
 
 d_type = 'd1'      # distance type (similarity measure)
 depth = 3         # retrieved depth, set to None will count the ap for whole database
@@ -73,13 +75,14 @@ class LBP(object):
         if resize:
             img = skimage.transform.resize(img, (200, 200))
 
-        img = img.astype(np.uint8)  # make sure its values are between 0-255
+        # img = img.astype(np.uint8)  # make sure its values are between 0-255
 
         # calculate LBP
         lbp = local_binary_pattern(img, P=points, R=radius, method=method)
-
+        # print(lbp.max())
+        # print(lbp.min())
         if normalize:
-            lbp = lbp.astype(float) / 255
+            lbp = 255 * lbp / np.max(lbp)
 
         if flatten:
             lbp = lbp.flatten()
@@ -105,11 +108,11 @@ class LBP(object):
             for d in tqdm(data.itertuples(), total=len(data)):
                 d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
                 d_lbp = self.Local_Binary_Pattern(
-                    d_img, radius=3, points=24, resize=True, method='default', flatten=True)
+                    d_img, radius=3, points=24, resize=True, method='default', flatten=False)
                 samples.append({
                     'img':  d_img,
                     'cls':  d_cls,
-                    'hist': d_lbp
+                    'hist': d_lbp.astype(np.uint8)
                 })
 
             cPickle.dump(samples, open(os.path.join(
@@ -125,7 +128,7 @@ if __name__ == "__main__":
 
     # test lbp feature extraction on one instance
     lbp_img = lbp.Local_Binary_Pattern(
-        input=data.iloc[0, 0], radius=3, points=24, method='default', resize=True,  normalize=True, flatten=False)
+        input=data.iloc[0, 0], radius=3, points=24, method='default', resize=True,  normalize=False, flatten=False)
 
     APs = evaluate_class(db, f_class=LBP, d_type=d_type, depth=depth)
     cls_MAPs = []
