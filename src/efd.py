@@ -34,9 +34,11 @@ d_type = 'd1'      # distance type (similarity measure)
 depth = 3         # retrieved depth, set to None will count the ap for whole database
 
 if (len(sys.argv) > 1):
-    depth = int(sys.argv[1])
-    if depth == "None":
+    if (sys.argv[1] == "None"):
         depth = None
+    else:
+        depth = int(sys.argv[1])
+
     d_type = sys.argv[2]
 
 
@@ -134,7 +136,7 @@ if __name__ == '__main__':
 
     APs = evaluate_class(db, f_class=EFD, d_type=d_type, depth=depth)
     cls_MAPs = []
-    for cls, cls_APs in APs.items():
+    for cls, cls_APs in sorted(APs.items()):
         MAP = np.mean(cls_APs)
         print("Class {}, MAP {}".format(cls, MAP))
         cls_MAPs.append(MAP)

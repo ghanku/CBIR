@@ -30,9 +30,11 @@ d_type = 'cosine'
 depth = 1
 
 if (len(sys.argv) > 1):
-    depth = int(sys.argv[1])
-    if depth == "None":
+    if (sys.argv[1] == "None"):
         depth = None
+    else:
+        depth = int(sys.argv[1])
+
     d_type = sys.argv[2]
 
 ''' MMAP
@@ -243,7 +245,7 @@ if __name__ == "__main__":
     # evaluate database
     APs = evaluate_class(db, f_class=Gabor, d_type=d_type, depth=depth)
     cls_MAPs = []
-    for cls, cls_APs in APs.items():
+    for cls, cls_APs in sorted(APs.items()):
         MAP = np.mean(cls_APs)
         print("Class {}, MAP {}".format(cls, MAP))
         cls_MAPs.append(MAP)
